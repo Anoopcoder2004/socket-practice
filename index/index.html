@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Demo</title>
+</head>
+<body>
+    <h1>WebSocket Demo</h1>
+
+    <input type="text" id="messageInput" placeholder="Enter message">
+    <button onclick="sendMessage()">Send</button>
+
+    <h3>Logs:</h3>
+    <div id="logs"></div>
+
+    <script>
+        const logs = document.getElementById("logs");
+
+        // Utility function to display messages on screen
+        function log(message) {
+            logs.innerHTML += `<p>${message}</p>`;
+        }
+
+        // Create WebSocket connection
+        const socket = new WebSocket("wss://echo.rapidtoolset.com/ws");
+
+        // Connection established
+        socket.onopen = () => {
+            log("✅ Connected to WebSocket Server");
+        };
+
+        // Message received from server
+        socket.onmessage = (event) => {
+            log("📩 Received: " + event.data);
+        };
+
+        // Connection closed
+        socket.onclose = () => {
+            log("❌ Disconnected");
+        };
+
+        // Error occurred
+        socket.onerror = (error) => {
+            log("⚠️ Error occurred");
+            console.error(error);
+        };
+
+        // Send message to server
+        function sendMessage() {
+            const input = document.getElementById("messageInput");
+
+            if (socket.readyState === WebSocket.OPEN) {
+                socket.send(input.value);
+                log("📤 Sent: " + input.value);
+                input.value = "";
+            } else {
+                log("Socket is not connected");
+            }
+        }
+    </script>
+</body>
+</html>
